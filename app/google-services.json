@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "104695591225",
+    "firebase_url": "https://ridely-30f56.firebaseio.com",
+    "project_id": "ridely-30f56",
+    "storage_bucket": "ridely-30f56.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:104695591225:android:df1602051b712a32c1f8e8",
+        "android_client_info": {
+          "package_name": "com.app.project115"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "104695591225-iqimt5gsbfj1uueu86l0qboucj5e8eo7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.project115",
+            "certificate_hash": "da8fc7e8a19cdee00be5d706efce45022a7f98ba"
+          }
+        },
+        {
+          "client_id": "104695591225-an2naa4cf847bbmuavpghj159as9n8bb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCw6Vkfobc-p7B4VTXCVeO2L5787Mtl678"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "104695591225-an2naa4cf847bbmuavpghj159as9n8bb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

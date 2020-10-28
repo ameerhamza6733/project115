@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="notification_error_ssl_cert_invalid">SLL error</string>
+    <string name="admob_app_id">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="default_notification_channel_id">Default notification channel</string>
+    <string name="facebook_app_id">268600434487881</string>
+
+
+</resources>
