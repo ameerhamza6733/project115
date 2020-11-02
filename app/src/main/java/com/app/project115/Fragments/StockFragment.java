@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -89,6 +90,7 @@ public class StockFragment extends Fragment {
                        stockAdapter=new StockAdapter(stock);
                        recyclerView.setAdapter(stockAdapter);
                    }else {
+                       Toast.makeText(getContext(),"Error: Please try again ",Toast.LENGTH_LONG).show();
                        Log.d(TAG,"error");
                    }
 

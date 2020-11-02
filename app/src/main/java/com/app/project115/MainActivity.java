@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     boolean checkResultState=false;
     private AppConfig appConfig;
     private ImageView imageViewFixedBanner;
+    private DownloadRemoteConfig downloadRemoteConfig;
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -58,8 +59,8 @@ public class MainActivity extends AppCompatActivity {
          imageViewFixedBanner= findViewById(R.id.imageViewFixedBanner);
         Log.d("MainActivty",""+Util.getUserCountry(getApplicationContext()));
         Glide.with(this).load(R.drawable.splash_bg).into(imageView);
-        DownloadRemoteConfig model = DownloadRemoteConfig.newInstance(getApplication());
-        model.getAppConfig().observe(this, new Observer<AppConfig>() {
+        downloadRemoteConfig = DownloadRemoteConfig.newInstance(getApplication());
+        downloadRemoteConfig.getAppConfig().observe(this, new Observer<AppConfig>() {
             @Override
             public void onChanged(AppConfig appConfig) {
                 MainActivity.this.appConfig=appConfig;
@@ -171,6 +172,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public ImageView getImageViewFixedBanner() {
+        return imageViewFixedBanner;
+    }
+
     public void hindeButton(){
       btCheckResult.setVisibility(View.GONE);
       btLuckyNumber.setVisibility(View.GONE);
@@ -179,6 +184,8 @@ public class MainActivity extends AppCompatActivity {
       btCheckResult.setVisibility(View.VISIBLE);
       btLuckyNumber.setVisibility(View.VISIBLE);
     }
+
+
 
     private void  showBanner(){
 
@@ -194,6 +201,7 @@ public class MainActivity extends AppCompatActivity {
         // Unregister since the activity is about to be closed.
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
         WorkManager.getInstance(this).cancelAllWorkByTag("ShowPopWorker");
+        downloadRemoteConfig.cleanUp();
         super.onDestroy();
     }
 }

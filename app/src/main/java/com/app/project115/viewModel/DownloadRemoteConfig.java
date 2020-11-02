@@ -11,6 +11,7 @@ import com.app.project115.Model.AppConfig;
 import com.app.project115.Constant;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
@@ -18,6 +19,8 @@ public class DownloadRemoteConfig extends AndroidViewModel {
     private MutableLiveData<AppConfig> appConfigLiveDate;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     private static DownloadRemoteConfig downloadRemoteConfig=null;
+    private ValueEventListener valueEventListener;
+    private DatabaseReference appConfigRef;
 
     public DownloadRemoteConfig(@NonNull Application application) {
         super(application);
@@ -30,26 +33,37 @@ public class DownloadRemoteConfig extends AndroidViewModel {
     }
 
     public LiveData<AppConfig> getAppConfig(){
+        if (valueEventListener==null){
+            valueEventListener= new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    appConfigLiveDate.setValue(snapshot.getValue(AppConfig.class));
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    error.toException().printStackTrace();
+                    appConfigLiveDate.setValue(null);
+                }
+            };
+        }
         if (appConfigLiveDate==null){
             appConfigLiveDate=new MutableLiveData<>();
-            database.getReference(Constant.APP_CONFIG)
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            appConfigLiveDate.setValue(snapshot.getValue(AppConfig.class));
-                        }
+           appConfigRef= database.getReference(Constant.APP_CONFIG);
+           appConfigRef.addValueEventListener(valueEventListener);
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                            error.toException().printStackTrace();
-                            appConfigLiveDate.setValue(null);
-                        }
-                    });
         }
         return appConfigLiveDate;
     }
 
 
+    public void  cleanUp(){
+        if (valueEventListener!=null && appConfigRef!=null){
+            appConfigRef.removeEventListener(valueEventListener);
+            valueEventListener=null;
+            appConfigRef=null;
+        }
+    }
 
      public static DownloadRemoteConfig newInstance(Application application) {
 

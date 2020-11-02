@@ -54,6 +54,7 @@ public class WebViewFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ((MainActivity)getActivity()).hindeButton();
+        ((MainActivity)getActivity()).getImageViewFixedBanner().setVisibility(View.GONE);
     }
 
 
@@ -62,6 +63,7 @@ public class WebViewFragment extends Fragment {
     public void onDetach() {
 
         ((MainActivity)getActivity()).showButton();
+        ((MainActivity)getActivity()).getImageViewFixedBanner().setVisibility(View.VISIBLE);
         super.onDetach();
     }
 

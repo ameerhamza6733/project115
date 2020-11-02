@@ -30,7 +30,7 @@ import java.util.List;
 public class StockViewModel extends ViewModel {
     private String TAG="StockViewModel";
     private RequestQueue queue ;
-    private MutableLiveData<List<Stock>> mutableLiveData;
+    private MutableLiveData<List<Stock>> mutableLiveData= new MutableLiveData<>();
     private RequestQueue requestQueue;
     private JsonObjectRequest jsonObjectRequest1;
     List<Stock> stockList= new ArrayList<>();
@@ -38,10 +38,11 @@ public class StockViewModel extends ViewModel {
         String url="https://7wg.org/LottoParser/ruay.php?bet_type=YEEKEE&open_dt="+date;
         String urlYEEKEE="https://7wg.org/LottoParser/ruay.php?bet_type=STOCK&open_dt="+date;
         Log.d(TAG,"get golden stock "+url);
-        Log.d(TAG,"counry stock "+url);
+        Log.d(TAG,"counry stock "+urlYEEKEE);
         this.requestQueue=requestQueue;
-        if (mutableLiveData==null){
-            mutableLiveData= new MutableLiveData<>();
+
+
+            stockList.clear();
             this.queue=requestQueue;
            jsonObjectRequest1 = new JsonObjectRequest(Request.Method.GET, urlYEEKEE, null, new Response.Listener<JSONObject>() {
                 @Override
@@ -50,6 +51,7 @@ public class StockViewModel extends ViewModel {
                         JSONArray jsonArray= response.getJSONArray("data");
 
                         for (int i =0; i<jsonArray.length();i++){
+                            Log.d(TAG,"parning "+i);
                             String name= jsonArray.getJSONObject(i).getString("bet_name");
                             String date=jsonArray.getJSONObject(i).getString("open_dt");
                             int threeDigits=jsonArray.getJSONObject(i).getInt("result_bon_3");
@@ -61,11 +63,12 @@ public class StockViewModel extends ViewModel {
                         }
 
 
-                        mutableLiveData.setValue(stockList);
+
                     }catch (Exception e){
                         e.printStackTrace();
-                        mutableLiveData.setValue(null);
+
                     }
+                    mutableLiveData.setValue(stockList);
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -99,11 +102,12 @@ public class StockViewModel extends ViewModel {
                         stockList.add(blueStock);
 
 
-                        queue.add(jsonObjectRequest1);
+
                     }catch (Exception e){
                         e.printStackTrace();
-                        mutableLiveData.setValue(null);
+
                     }
+                    queue.add(jsonObjectRequest1);
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -118,7 +122,7 @@ public class StockViewModel extends ViewModel {
 
 
 
-        }
+
 
 
 
