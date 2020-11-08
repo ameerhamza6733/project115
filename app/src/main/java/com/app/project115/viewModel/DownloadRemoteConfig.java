@@ -1,6 +1,7 @@
 package com.app.project115.viewModel;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -21,6 +22,7 @@ public class DownloadRemoteConfig extends AndroidViewModel {
     private static DownloadRemoteConfig downloadRemoteConfig=null;
     private ValueEventListener valueEventListener;
     private DatabaseReference appConfigRef;
+    private String TAG="DownloadRemoteConfig";
 
     public DownloadRemoteConfig(@NonNull Application application) {
         super(application);
@@ -37,6 +39,7 @@ public class DownloadRemoteConfig extends AndroidViewModel {
             valueEventListener= new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    Log.d(TAG,"onDateaChange");
                     appConfigLiveDate.setValue(snapshot.getValue(AppConfig.class));
                 }
 

@@ -5,15 +5,15 @@ import android.widget.Button;
 public class PopButton {
     private String title;
     private String url;
-    private String backGroundColorCode;
+    private String backGroundImage;
 
     public PopButton() {
     }
 
-    public PopButton(String title, String url, String backGroundColorCode) {
+    public PopButton(String title, String url, String backGroundImage) {
         this.title = title;
         this.url = url;
-        this.backGroundColorCode = backGroundColorCode;
+        this.backGroundImage = backGroundImage;
     }
 
     public String getTitle() {
@@ -24,7 +24,7 @@ public class PopButton {
         return url;
     }
 
-    public String getBackGroundColorCode() {
-        return backGroundColorCode;
+    public String getBackGroundImage() {
+        return backGroundImage;
     }
 }

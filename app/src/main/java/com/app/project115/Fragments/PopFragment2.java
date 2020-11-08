@@ -49,7 +49,6 @@ public class PopFragment2 extends DialogFragment {
         final ImageView imageView = view.findViewById(R.id.imageBackGoundPop);
         final ImageButton btClosePop=view.findViewById(R.id.btClosePop);
         SharedPref.write(SharedPref.IS_FIREST_TIME,false);
-
         SharedPref.write(SharedPref.KEY_COUNT_POP_Y,0);
         DownloadRemoteConfig model = DownloadRemoteConfig.newInstance(getActivity().getApplication());
         model.getAppConfig().observe(this, new Observer<AppConfig>() {
@@ -93,8 +92,11 @@ public class PopFragment2 extends DialogFragment {
                           .setInputData(data)
                           .addTag("ShowPopWorker")
                           .build();
-          WorkManager.getInstance(getActivity().getApplicationContext()).enqueueUniqueWork("ShowPopWorker", ExistingWorkPolicy.KEEP,saveRequest);
 
+          if (appConfig.isEnablePop31()){
+              WorkManager.getInstance(getActivity().getApplicationContext()).enqueueUniqueWork("ShowPopWorker", ExistingWorkPolicy.KEEP,saveRequest);
+
+          }
       }
         super.onStop();
 

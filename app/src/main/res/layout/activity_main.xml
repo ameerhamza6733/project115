@@ -1,65 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   android:background="#000000"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
-    <ImageView
-        android:scaleType="centerCrop"
-        android:id="@+id/imageBackGound"
-        app:layout_constraintBottom_toBottomOf="parent"
+
+    <ImageButton
+
+        android:id="@+id/btHome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+      android:src="@drawable/ic_baseline_home_24"
+        app:layout_constraintEnd_toStartOf="@+id/imageButton"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+
+        android:id="@+id/imageBackGound"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btHome" />
+
+    <ImageButton
+        android:visibility="invisible"
+        android:id="@+id/imageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_refresh_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btHome"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
 
-        android:padding="8dp"
-        android:textColor="@color/colorWhite"
-        android:background="@drawable/button_seletor_back_gound"
         android:id="@+id/btCheckResult"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/button_seletor_back_gound"
+        android:padding="8dp"
         android:text="Check Result"
+        android:textColor="@color/colorWhite"
         app:layout_constraintEnd_toStartOf="@+id/btLuckyNumber"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-       app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/btHome" />
 
     <Button
 
-        android:background="@drawable/button_seletor_back_gound_transparent"
-        android:padding="8dp"
-        android:textColor="@color/colorWhite"
         android:id="@+id/btLuckyNumber"
-       app:layout_constraintTop_toTopOf="parent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/button_seletor_back_gound_transparent"
+        android:padding="8dp"
         android:text="Lucky Number"
+        android:textColor="@color/colorWhite"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/btCheckResult"
-       />
+        app:layout_constraintTop_toBottomOf="@id/btHome" />
 
     <FrameLayout
-        android:layout_marginTop="8dp"
         android:id="@+id/fragment_container"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="8dp"
 
         app:layout_constraintBottom_toTopOf="@+id/imageViewFixedBanner"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btLuckyNumber" />
+
     <ImageView
 
-        android:scaleType="centerCrop"
         android:id="@+id/imageViewFixedBanner"
         android:layout_width="0dp"
         android:layout_height="200dp"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.app.project115.Model.PopButton;
 import com.app.project115.R;
 import com.app.project115.Util;
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -33,9 +36,11 @@ public class PopButtonListAdupter extends RecyclerView.Adapter<PopButtonListAdup
     @Override
     public void onBindViewHolder(@NonNull final PopViewHolder holder, final int position) {
        try{
-           holder.button.setBackgroundColor(Color.parseColor(popButtonList.get(position).getBackGroundColorCode()));
-           holder.button.setText(popButtonList.get(position).getTitle());
-           holder.button.setOnClickListener(new View.OnClickListener() {
+           Glide.with(holder.itemView.getContext()).load(popButtonList.get(position).getBackGroundImage()).into(holder.button);
+          // holder.button.setBackgroundColor(Color.parseColor(popButtonList.get(position).getBackGroundImage()));
+           holder.bt.setText(popButtonList.get(position).getTitle());
+
+           holder.itemView.setOnClickListener(new View.OnClickListener() {
                @Override
                public void onClick(View view) {
                    Util.openBrowser(popButtonList.get(position).getUrl(),holder.button.getContext().getApplicationContext());
@@ -52,10 +57,12 @@ public class PopButtonListAdupter extends RecyclerView.Adapter<PopButtonListAdup
     }
 
     public static final class PopViewHolder extends RecyclerView.ViewHolder{
-        public Button button;
+        public ImageView button;
+        public TextView bt;
         public PopViewHolder(@NonNull View itemView) {
             super(itemView);
-           button= itemView.findViewById(R.id.button);
+           button= itemView.findViewById(R.id.image);
+           bt=itemView.findViewById(R.id.bt);
 
         }
     }

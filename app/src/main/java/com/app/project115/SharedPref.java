@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 public class SharedPref {
 
 
+    public static final String KEY_URL_WEBVIEW = "KEY_URL_WEBVIEW";
     public static String IS_FIREST_TIME="is first time";
     public static String KEY_COUNT_POP_X="key count pop x";
     public static String KEY_COUNT_POP_Y="key count pop y";

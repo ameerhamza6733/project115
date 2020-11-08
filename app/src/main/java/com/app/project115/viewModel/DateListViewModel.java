@@ -20,7 +20,7 @@ public  class DateListViewModel extends ViewModel {
     public LiveData<List<Date>> genrateLast10Days(){
        if (listDateMutableLiveData==null){
            listDateMutableLiveData=new MutableLiveData<>();
-           for (int i=10; i>0; i--){
+           for (int i=0; i<=10; i++){
 
                dateList.add(new Date(System.currentTimeMillis()- TimeUnit.DAYS.toMillis(i)));
            }

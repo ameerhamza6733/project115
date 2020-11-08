@@ -14,6 +14,7 @@ public class AppConfig {
     private String popBackGroundUrl;
     private String pop2BackGroundUrl;
     private boolean enablePop31;
+    private boolean enablePop32;
     private int popX;
     private  int popY;
 
@@ -89,7 +90,13 @@ public class AppConfig {
     }
 
 
+    public boolean isEnablePop32() {
+        return enablePop32;
+    }
 
+    public void setEnablePop32(boolean enablePop32) {
+        this.enablePop32 = enablePop32;
+    }
 
     public boolean isShowFixBanner() {
         return showFixBanner;

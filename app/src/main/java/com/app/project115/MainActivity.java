@@ -15,11 +15,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.app.project115.Fragments.DateListFragment;
 import com.app.project115.Fragments.GenrateLuckyNumberFragment;
@@ -29,12 +32,17 @@ import com.app.project115.Fragments.WebViewFragment;
 import com.app.project115.Model.AppConfig;
 import com.app.project115.viewModel.DownloadRemoteConfig;
 import com.bumptech.glide.Glide;
+import com.facebook.FacebookSdk;
+import com.facebook.LoggingBehavior;
 
 public class MainActivity extends AppCompatActivity {
+    private int doubleBackToExitPressed;
     boolean luckNumberState=false;
     boolean checkResultState=false;
     private AppConfig appConfig;
     private ImageView imageViewFixedBanner;
+    private ImageButton btHome;
+    private ImageButton btRefresh;
     private DownloadRemoteConfig downloadRemoteConfig;
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
@@ -50,31 +58,46 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        FacebookSdk.setIsDebugEnabled(true);
+        FacebookSdk.addLoggingBehavior(LoggingBehavior.APP_EVENTS);
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter("show-pop"));
          btLuckyNumber= findViewById(R.id.btLuckyNumber);
         btCheckResult= findViewById(R.id.btCheckResult);
         ImageView imageView = findViewById(R.id.imageBackGound);
          imageViewFixedBanner= findViewById(R.id.imageViewFixedBanner);
+         btHome=findViewById(R.id.btHome);
+         btRefresh=findViewById(R.id.imageButton);
         Log.d("MainActivty",""+Util.getUserCountry(getApplicationContext()));
         Glide.with(this).load(R.drawable.splash_bg).into(imageView);
+        btHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                attachFragment(R.id.fragment_container,DateListFragment.newInstance(),getApplicationContext(),"DateListFragment");
+
+            }
+        });
         downloadRemoteConfig = DownloadRemoteConfig.newInstance(getApplication());
         downloadRemoteConfig.getAppConfig().observe(this, new Observer<AppConfig>() {
             @Override
             public void onChanged(AppConfig appConfig) {
-                MainActivity.this.appConfig=appConfig;
-                if (appConfig.getAppCodeNumber()==1){
-                    btLuckyNumber.setVisibility(View.GONE);
-                    btCheckResult.setVisibility(View.GONE);
-                    attachFragment(R.id.fragment_container,WebViewFragment.newInstance(appConfig.getWebViewUrl()),getApplicationContext(),"WebViewFragment");
 
-                }else  if (appConfig.getAppCodeNumber()==2){
-                    checkResultState=true;
-                    btCheckResult.callOnClick();
+                MainActivity.this.appConfig=appConfig;
+                if (getSupportFragmentManager().findFragmentById(R.id.fragment_container)==null){
+                    if (appConfig.getAppCodeNumber()==1){
+                        btLuckyNumber.setVisibility(View.GONE);
+                        btCheckResult.setVisibility(View.GONE);
+                        SharedPref.write(SharedPref.KEY_URL_WEBVIEW,appConfig.getWebViewUrl());
+                        attachFragment(R.id.fragment_container,WebViewFragment.newInstance(),getApplicationContext(),"WebViewFragment");
+
+                    }else  if (appConfig.getAppCodeNumber()==2){
+                        checkResultState=true;
+                        btCheckResult.callOnClick();
+                    }
+                    showBanner();
+                    showPop();
+                    showPop2();
                 }
-                showBanner();
-                showPop();
             }
         });
 
@@ -128,13 +151,19 @@ public class MainActivity extends AppCompatActivity {
                     if (appConfig.isBannerOpenNewBrowser()){
                         Util.openBrowser(appConfig.getFixBannerUrl(),getApplicationContext());
                     }else {
-                        attachFragment(R.id.fragment_container,WebViewFragment.newInstance(appConfig.getFixBannerUrl()),getApplicationContext(),"WebViewFragment");
+                        SharedPref.write(SharedPref.KEY_URL_WEBVIEW,appConfig.getFixBannerUrl());
+                        attachFragment(R.id.fragment_container,WebViewFragment.newInstance(),getApplicationContext(),"WebViewFragment");
 
                     }
                 }
             }
         });
     }
+
+    public ImageButton getBtRefresh() {
+        return btRefresh;
+    }
+
     public  void attachFragment (int fragmentHolderLayoutId, Fragment fragment, Context context, String tag ) {
         Log.d("attachFragment","attachFragment");
         FragmentManager manager = getSupportFragmentManager ();
@@ -152,21 +181,38 @@ public class MainActivity extends AppCompatActivity {
 
     private void showPop(){
         boolean isFirstTime= SharedPref.read(SharedPref.IS_FIREST_TIME,true);
+
         int popY=SharedPref.read(SharedPref.KEY_COUNT_POP_Y,0);
 
-        if (appConfig.isEnablePop31() && Util.getUserCountry(getApplicationContext()).equalsIgnoreCase("th")){
-            if (isFirstTime){
-                if (popY>=appConfig.getPopY()){
+        if ( isFirstTime || (appConfig.isEnablePop31() && Util.getUserCountry(getApplicationContext()).equalsIgnoreCase("th"))){
+
+                if (popY>=appConfig.getPopY() && appConfig.isEnablePop32()){
                     SharedPref.write(SharedPref.KEY_COUNT_POP_Y,0);
                     PopFragment2  popFragment= new PopFragment2();
                     popFragment.setStyle(DialogFragment.STYLE_NO_TITLE,R.style.DialogTheme);
-                    popFragment.showNow(getSupportFragmentManager(),"popFragment");
+                    popFragment.showNow(getSupportFragmentManager(),"pop2Fragment");
                 }else {
                     PopFragment  popFragment= new PopFragment();
                     popFragment.setStyle(DialogFragment.STYLE_NO_TITLE,R.style.DialogTheme);
                     popFragment.showNow(getSupportFragmentManager(),"popFragment");
                 }
-            }
+
+
+        }
+
+    }
+    private void showPop2(){
+
+
+        if (appConfig.isEnablePop32() && Util.getUserCountry(getApplicationContext()).equalsIgnoreCase("pk")){
+
+
+                    SharedPref.write(SharedPref.KEY_COUNT_POP_Y,0);
+                    PopFragment2  popFragment= new PopFragment2();
+                    popFragment.setStyle(DialogFragment.STYLE_NO_TITLE,R.style.DialogTheme);
+                    popFragment.showNow(getSupportFragmentManager(),"pop2Fragment");
+
+
 
         }
 
@@ -203,5 +249,35 @@ public class MainActivity extends AppCompatActivity {
         WorkManager.getInstance(this).cancelAllWorkByTag("ShowPopWorker");
         downloadRemoteConfig.cleanUp();
         super.onDestroy();
+    }
+
+
+
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressed == 2) {
+            finishAffinity();
+            System.exit(0);
+        }
+        else {
+            doubleBackToExitPressed++;
+            Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if(f instanceof WebViewFragment){
+               WebViewFragment webViewFragment= ((WebViewFragment) f);
+              if (  webViewFragment.getWebView().canGoBack()){
+                  webViewFragment.getWebView().goBack();
+              }
+            }
+
+        }
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                doubleBackToExitPressed=1;
+
+            }
+        }, 1000);
     }
 }
