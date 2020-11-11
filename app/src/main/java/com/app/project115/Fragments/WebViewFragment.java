@@ -64,8 +64,13 @@ public class WebViewFragment extends Fragment  {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ((MainActivity)getActivity()).hindeButton();
-        ((MainActivity)getActivity()).getImageViewFixedBanner().setVisibility(View.GONE);
+
+       try {
+           ((MainActivity)getActivity()).hindeButton();
+           ((MainActivity)getActivity()).getImageViewFixedBanner().setVisibility(View.GONE);
+       }catch (Exception e){
+
+       }
     }
 
 
@@ -78,16 +83,24 @@ public class WebViewFragment extends Fragment  {
 
     @Override
     public void onPause() {
-        ((MainActivity)getActivity()).showButton();
-        ((MainActivity)getActivity()).getImageViewFixedBanner().setVisibility(View.VISIBLE);
+       try {
+           ((MainActivity)getActivity()).showButton();
+           ((MainActivity)getActivity()).getImageViewFixedBanner().setVisibility(View.VISIBLE);
+       }catch (Exception e){
+           e.printStackTrace();
+       }
         super.onPause();
     }
 
     @Override
     public void onDetach() {
 
-        ((MainActivity)getActivity()).showButton();
-        ((MainActivity)getActivity()).getImageViewFixedBanner().setVisibility(View.VISIBLE);
+       try {
+           ((MainActivity)getActivity()).showButton();
+           ((MainActivity)getActivity()).getImageViewFixedBanner().setVisibility(View.VISIBLE);
+       }catch (Exception e){
+
+       }
         super.onDetach();
     }
 
@@ -171,15 +184,15 @@ public class WebViewFragment extends Fragment  {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        String url = SharedPref.read(SharedPref.KEY_URL_WEBVIEW,"");
+        updateUi(url);
 
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        String url = SharedPref.read(SharedPref.KEY_URL_WEBVIEW,"");
-        updateUi(url);
+
     }
 
     private void updateUi(String url){

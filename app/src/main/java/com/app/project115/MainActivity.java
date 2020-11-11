@@ -24,6 +24,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.app.project115.Activty.WebActivity;
 import com.app.project115.Fragments.DateListFragment;
 import com.app.project115.Fragments.GenrateLuckyNumberFragment;
 import com.app.project115.Fragments.PopFragment;
@@ -34,6 +35,7 @@ import com.app.project115.viewModel.DownloadRemoteConfig;
 import com.bumptech.glide.Glide;
 import com.facebook.FacebookSdk;
 import com.facebook.LoggingBehavior;
+import com.onesignal.OneSignal;
 
 public class MainActivity extends AppCompatActivity {
     private int doubleBackToExitPressed;
@@ -55,6 +57,18 @@ public class MainActivity extends AppCompatActivity {
     private Button btCheckResult;
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        OneSignal.setLogLevel(OneSignal.LOG_LEVEL.VERBOSE, OneSignal.LOG_LEVEL.NONE);
+
+        // OneSignal Initialization
+        OneSignal.startInit(getApplicationContext())
+                .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
+                .unsubscribeWhenNotificationsAreDisabled(true)
+                .init();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -73,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
         btHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                showButton();
                 attachFragment(R.id.fragment_container,DateListFragment.newInstance(),getApplicationContext(),"DateListFragment");
 
             }
@@ -82,21 +97,24 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(AppConfig appConfig) {
 
-                MainActivity.this.appConfig=appConfig;
-                if (getSupportFragmentManager().findFragmentById(R.id.fragment_container)==null){
-                    if (appConfig.getAppCodeNumber()==1){
-                        btLuckyNumber.setVisibility(View.GONE);
-                        btCheckResult.setVisibility(View.GONE);
-                        SharedPref.write(SharedPref.KEY_URL_WEBVIEW,appConfig.getWebViewUrl());
-                        attachFragment(R.id.fragment_container,WebViewFragment.newInstance(),getApplicationContext(),"WebViewFragment");
+                if (appConfig!=null){
+                    MainActivity.this.appConfig=appConfig;
+                    if (getSupportFragmentManager().findFragmentById(R.id.fragment_container)==null){
+                        if (appConfig.getAppCodeNumber()==1){
 
-                    }else  if (appConfig.getAppCodeNumber()==2){
-                        checkResultState=true;
-                        btCheckResult.callOnClick();
+                            SharedPref.write(SharedPref.KEY_URL_WEBVIEW,appConfig.getWebViewUrl());
+                            startActivity(new Intent(MainActivity.this, WebActivity.class));
+                            finish();
+                        }else  if (appConfig.getAppCodeNumber()==2){
+                            checkResultState=true;
+                            btCheckResult.callOnClick();
+                        }
+                        showBanner();
+                        showPop();
+                        showPop2();
+                    }else {
+                        Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
                     }
-                    showBanner();
-                    showPop();
-                    showPop2();
                 }
             }
         });
@@ -184,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
 
         int popY=SharedPref.read(SharedPref.KEY_COUNT_POP_Y,0);
 
-        if ( isFirstTime || (appConfig.isEnablePop31() && Util.getUserCountry(getApplicationContext()).equalsIgnoreCase("th"))){
+        if ( isFirstTime || (appConfig.isEnablePop31() && (Util.getUserCountry(getApplicationContext()).equalsIgnoreCase("th"))||Util.getUserCountry(getApplicationContext()).equalsIgnoreCase("th"))){
 
                 if (popY>=appConfig.getPopY() && appConfig.isEnablePop32()){
                     SharedPref.write(SharedPref.KEY_COUNT_POP_Y,0);
@@ -204,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
     private void showPop2(){
 
 
-        if (appConfig.isEnablePop32() && Util.getUserCountry(getApplicationContext()).equalsIgnoreCase("pk")){
+        if (appConfig.isEnablePop32() && (Util.getUserCountry(getApplicationContext()).equalsIgnoreCase("th") || Util.getUserCountry(getApplicationContext()).equalsIgnoreCase("pk"))){
 
 
                     SharedPref.write(SharedPref.KEY_COUNT_POP_Y,0);
@@ -235,7 +253,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void  showBanner(){
 
-        if (appConfig.isShowFixBanner() && Util.getUserCountry(getApplicationContext()).equalsIgnoreCase("pk")){
+        if (appConfig.isShowFixBanner() && (Util.getUserCountry(getApplicationContext()).equalsIgnoreCase("th") || Util.getUserCountry(getApplicationContext()).equalsIgnoreCase("pk"))){
             imageViewFixedBanner.setVisibility(View.VISIBLE);
             Glide.with(this).load(appConfig.getFixBannerImageUrl()).into(imageViewFixedBanner);
         }else {
@@ -267,7 +285,11 @@ public class MainActivity extends AppCompatActivity {
                WebViewFragment webViewFragment= ((WebViewFragment) f);
               if (  webViewFragment.getWebView().canGoBack()){
                   webViewFragment.getWebView().goBack();
+              }else {
+                  super.onBackPressed();
               }
+            }else {
+                super.onBackPressed();
             }
 
         }
