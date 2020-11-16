@@ -9,6 +9,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.app.project115.Fragments.WebViewFragment;
 import com.app.project115.R;
@@ -46,17 +47,18 @@ public class WebActivity extends AppCompatActivity {
         }
         else {
             doubleBackToExitPressed++;
+            Toast.makeText(getApplicationContext(),"Click again to close",Toast.LENGTH_SHORT).show();
             Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
             if(f instanceof WebViewFragment){
                 WebViewFragment webViewFragment= ((WebViewFragment) f);
                 if (  webViewFragment.getWebView().canGoBack()){
                     webViewFragment.getWebView().goBack();
                 }else {
-                    finishAffinity();
-                    System.exit(0);
+                  finish();
                 }
             }else {
-                super.onBackPressed();
+              super.onBackPressed();
+
             }
 
         }
@@ -67,6 +69,6 @@ public class WebActivity extends AppCompatActivity {
                 doubleBackToExitPressed=1;
 
             }
-        }, 1000);
+        }, 1500);
     }
 }

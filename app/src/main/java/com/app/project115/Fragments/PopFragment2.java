@@ -20,6 +20,7 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
 import com.app.project115.Adupters.PopButtonListAdupter;
+import com.app.project115.MainActivity;
 import com.app.project115.Model.AppConfig;
 import com.app.project115.R;
 import com.app.project115.SharedPref;
@@ -74,30 +75,36 @@ public class PopFragment2 extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-        SharedPref.write(SharedPref.KEY_IS_POP_SHOW,true);
+        MainActivity.isPop31Showing=true;
+    }
+
+    @Override
+    public void onDetach() {
+        if (appConfig!=null){
+            MainActivity.isPop31Showing=false;
+            Log.d("popFragment","show pop after "+appConfig.getPopX());
+            Data  data = new Data.Builder().putInt("seconds", appConfig.getPopX())
+                    .build();
+            ;
+
+            OneTimeWorkRequest saveRequest =
+                    new OneTimeWorkRequest.Builder(ShowPopWorker.class)
+                            .setInitialDelay(appConfig.getPopX(),TimeUnit.SECONDS)
+                            .setInputData(data)
+                            .addTag("ShowPopWorker")
+                            .build();
+
+            if (appConfig.isEnablePop31()){
+                WorkManager.getInstance(getActivity().getApplicationContext()).enqueueUniqueWork("ShowPopWorker", ExistingWorkPolicy.KEEP,saveRequest);
+
+            }
+        }
+        super.onDetach();
     }
 
     @Override
     public void onStop() {
-      if (appConfig!=null){
-          SharedPref.write(SharedPref.KEY_IS_POP_SHOW,false);
-          Log.d("popFragment","show pop after "+appConfig.getPopX());
-          Data  data = new Data.Builder().putInt("seconds", appConfig.getPopX())
-                  .build();
-          ;
 
-          OneTimeWorkRequest saveRequest =
-                  new OneTimeWorkRequest.Builder(ShowPopWorker.class)
-                          .setInitialDelay(appConfig.getPopX(),TimeUnit.SECONDS)
-                          .setInputData(data)
-                          .addTag("ShowPopWorker")
-                          .build();
-
-          if (appConfig.isEnablePop31()){
-              WorkManager.getInstance(getActivity().getApplicationContext()).enqueueUniqueWork("ShowPopWorker", ExistingWorkPolicy.KEEP,saveRequest);
-
-          }
-      }
         super.onStop();
 
     }

@@ -1,5 +1,6 @@
 package com.app.project115.Fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -79,30 +80,31 @@ public class PopFragment extends DialogFragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        SharedPref.write(SharedPref.KEY_IS_POP_SHOW,true);
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        MainActivity.isPop31Showing=true;
     }
 
     @Override
-    public void onStop() {
-      if (appConfig!=null){
-          SharedPref.write(SharedPref.KEY_IS_POP_SHOW,false);
-          Log.d("popFragment","show pop after "+appConfig.getPopX());
-          Data  data = new Data.Builder().putInt("seconds", appConfig.getPopX())
-                  .build();
-          ;
+    public void onDetach() {
+        if (appConfig!=null){
+            MainActivity.isPop31Showing=false;
+            Log.d("popFragment","show pop after "+appConfig.getPopX());
+            Data  data = new Data.Builder().putInt("seconds", appConfig.getPopX())
+                    .build();
+            ;
 
-          OneTimeWorkRequest saveRequest =
-                  new OneTimeWorkRequest.Builder(ShowPopWorker.class)
-                          .setInitialDelay(appConfig.getPopX(),TimeUnit.SECONDS)
-                          .setInputData(data)
-                          .addTag("ShowPopWorker")
-                          .build();
-          WorkManager.getInstance(getActivity().getApplicationContext()).enqueueUniqueWork("ShowPopWorker", ExistingWorkPolicy.KEEP,saveRequest);
+            OneTimeWorkRequest saveRequest =
+                    new OneTimeWorkRequest.Builder(ShowPopWorker.class)
+                            .setInitialDelay(appConfig.getPopX(),TimeUnit.SECONDS)
+                            .setInputData(data)
+                            .addTag("ShowPopWorker")
+                            .build();
+            WorkManager.getInstance(getActivity().getApplicationContext()).enqueueUniqueWork("ShowPopWorker", ExistingWorkPolicy.KEEP,saveRequest);
 
-      }
-        super.onStop();
-
+        }
+        super.onDetach();
     }
+
+
 }

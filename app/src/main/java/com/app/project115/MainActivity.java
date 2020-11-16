@@ -38,6 +38,10 @@ import com.facebook.LoggingBehavior;
 import com.onesignal.OneSignal;
 
 public class MainActivity extends AppCompatActivity {
+
+    public static boolean isPop31Showing=false;
+    public static boolean isIsPop32Showing=false;
+
     private int doubleBackToExitPressed;
     boolean luckNumberState=false;
     boolean checkResultState=false;
@@ -170,8 +174,7 @@ public class MainActivity extends AppCompatActivity {
                         Util.openBrowser(appConfig.getFixBannerUrl(),getApplicationContext());
                     }else {
                         SharedPref.write(SharedPref.KEY_URL_WEBVIEW,appConfig.getFixBannerUrl());
-                        attachFragment(R.id.fragment_container,WebViewFragment.newInstance(),getApplicationContext(),"WebViewFragment");
-
+                        startActivity(new Intent(MainActivity.this, WebActivity.class));
                     }
                 }
             }
@@ -198,11 +201,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showPop(){
-        boolean isFirstTime= SharedPref.read(SharedPref.IS_FIREST_TIME,true);
+       // boolean isFirstTime= SharedPref.read(SharedPref.IS_FIREST_TIME,true);
 
         int popY=SharedPref.read(SharedPref.KEY_COUNT_POP_Y,0);
 
-        if ( isFirstTime || (appConfig.isEnablePop31() && (Util.getUserCountry(getApplicationContext()).equalsIgnoreCase("th"))||Util.getUserCountry(getApplicationContext()).equalsIgnoreCase("th"))){
+        if ( appConfig.isEnablePop31() && (Util.getUserCountry(getApplicationContext()).equalsIgnoreCase("th")||Util.getUserCountry(getApplicationContext()).equalsIgnoreCase("pk"))){
 
                 if (popY>=appConfig.getPopY() && appConfig.isEnablePop32()){
                     SharedPref.write(SharedPref.KEY_COUNT_POP_Y,0);
@@ -222,16 +225,19 @@ public class MainActivity extends AppCompatActivity {
     private void showPop2(){
 
 
-        if (appConfig.isEnablePop32() && (Util.getUserCountry(getApplicationContext()).equalsIgnoreCase("th") || Util.getUserCountry(getApplicationContext()).equalsIgnoreCase("pk"))){
+
+        if (!isPop31Showing){
+            if (appConfig.isEnablePop32() && (Util.getUserCountry(getApplicationContext()).equalsIgnoreCase("th") || Util.getUserCountry(getApplicationContext()).equalsIgnoreCase("pk"))){
 
 
-                    SharedPref.write(SharedPref.KEY_COUNT_POP_Y,0);
-                    PopFragment2  popFragment= new PopFragment2();
-                    popFragment.setStyle(DialogFragment.STYLE_NO_TITLE,R.style.DialogTheme);
-                    popFragment.showNow(getSupportFragmentManager(),"pop2Fragment");
+                SharedPref.write(SharedPref.KEY_COUNT_POP_Y,0);
+                PopFragment2  popFragment= new PopFragment2();
+                popFragment.setStyle(DialogFragment.STYLE_NO_TITLE,R.style.DialogTheme);
+                popFragment.showNow(getSupportFragmentManager(),"pop2Fragment");
 
 
 
+            }
         }
 
     }
@@ -280,6 +286,8 @@ public class MainActivity extends AppCompatActivity {
         }
         else {
             doubleBackToExitPressed++;
+            Toast.makeText(getApplicationContext(),"Click again to close",Toast.LENGTH_SHORT).show();
+
             Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
             if(f instanceof WebViewFragment){
                WebViewFragment webViewFragment= ((WebViewFragment) f);
@@ -289,6 +297,7 @@ public class MainActivity extends AppCompatActivity {
                   super.onBackPressed();
               }
             }else {
+                if (getSupportFragmentManager().getBackStackEntryCount()>1)
                 super.onBackPressed();
             }
 

@@ -13,6 +13,7 @@ import androidx.work.WorkManager;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
+import com.app.project115.MainActivity;
 import com.app.project115.SharedPref;
 
 import java.util.concurrent.TimeUnit;
@@ -28,11 +29,11 @@ public class ShowPopWorker extends Worker {
     public Result doWork() {
         Intent intent = new Intent("show-pop");
         // You can also include some extra data.
-        intent.putExtra("message", "This is my message!");
+
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
         int popX= getInputData().getInt("seconds",0);
-       boolean isPopShowing= SharedPref.read(SharedPref.KEY_IS_POP_SHOW,false);
-        if (popX!=0 && !isPopShowing){
+
+        if (popX!=0 && !MainActivity.isPop31Showing){
             Data data = new Data.Builder().putInt("seconds", popX)
                     .build();
             ;
