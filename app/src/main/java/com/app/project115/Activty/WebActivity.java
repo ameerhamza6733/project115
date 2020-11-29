@@ -47,7 +47,6 @@ public class WebActivity extends AppCompatActivity {
         }
         else {
             doubleBackToExitPressed++;
-            Toast.makeText(getApplicationContext(),"Click again to close",Toast.LENGTH_SHORT).show();
             Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
             if(f instanceof WebViewFragment){
                 WebViewFragment webViewFragment= ((WebViewFragment) f);

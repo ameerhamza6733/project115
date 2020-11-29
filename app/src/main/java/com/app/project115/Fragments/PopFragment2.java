@@ -66,6 +66,7 @@ public class PopFragment2 extends DialogFragment {
             @Override
             public void onClick(View view) {
               dismiss();
+              getActivity().finish();
 
 
             }

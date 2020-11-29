@@ -24,6 +24,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.app.project115.Activty.ShowPopActivity;
 import com.app.project115.Activty.WebActivity;
 import com.app.project115.Fragments.DateListFragment;
 import com.app.project115.Fragments.GenrateLuckyNumberFragment;
@@ -35,6 +36,8 @@ import com.app.project115.viewModel.DownloadRemoteConfig;
 import com.bumptech.glide.Glide;
 import com.facebook.FacebookSdk;
 import com.facebook.LoggingBehavior;
+import com.facebook.share.Share;
+import com.google.gson.Gson;
 import com.onesignal.OneSignal;
 
 public class MainActivity extends AppCompatActivity {
@@ -103,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (appConfig!=null){
                     MainActivity.this.appConfig=appConfig;
+                    SharedPref.write(SharedPref.KEY_APP_CONFIG,new Gson().toJson(appConfig));
                     if (getSupportFragmentManager().findFragmentById(R.id.fragment_container)==null){
                         if (appConfig.getAppCodeNumber()==1){
 
@@ -117,8 +121,11 @@ public class MainActivity extends AppCompatActivity {
                         showPop();
                         showPop2();
                     }else {
-                        Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(),"new settings from db",Toast.LENGTH_LONG).show();
+
                     }
+                }else {
+                    Toast.makeText(getApplicationContext(),"Error: unable to get app config",Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -181,6 +188,21 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void showPop2() {
+        if (!isPop31Showing){
+            Intent intent = new Intent(this, ShowPopActivity.class);
+            intent.setAction("showPop2");
+            startActivity(intent);
+        }
+    }
+
+    private void showPop() {
+        isPop31Showing=true;
+        Intent intent = new Intent(this, ShowPopActivity.class);
+        intent.setAction("showPop");
+        startActivity(intent);
+    }
+
     public ImageButton getBtRefresh() {
         return btRefresh;
     }
@@ -200,47 +222,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void showPop(){
-       // boolean isFirstTime= SharedPref.read(SharedPref.IS_FIREST_TIME,true);
 
-        int popY=SharedPref.read(SharedPref.KEY_COUNT_POP_Y,0);
-
-        if ( appConfig.isEnablePop31() && (Util.getUserCountry(getApplicationContext()).equalsIgnoreCase("th")||Util.getUserCountry(getApplicationContext()).equalsIgnoreCase("pk"))){
-
-                if (popY>=appConfig.getPopY() && appConfig.isEnablePop32()){
-                    SharedPref.write(SharedPref.KEY_COUNT_POP_Y,0);
-                    PopFragment2  popFragment= new PopFragment2();
-                    popFragment.setStyle(DialogFragment.STYLE_NO_TITLE,R.style.DialogTheme);
-                    popFragment.showNow(getSupportFragmentManager(),"pop2Fragment");
-                }else {
-                    PopFragment  popFragment= new PopFragment();
-                    popFragment.setStyle(DialogFragment.STYLE_NO_TITLE,R.style.DialogTheme);
-                    popFragment.showNow(getSupportFragmentManager(),"popFragment");
-                }
-
-
-        }
-
-    }
-    private void showPop2(){
-
-
-
-        if (!isPop31Showing){
-            if (appConfig.isEnablePop32() && (Util.getUserCountry(getApplicationContext()).equalsIgnoreCase("th") || Util.getUserCountry(getApplicationContext()).equalsIgnoreCase("pk"))){
-
-
-                SharedPref.write(SharedPref.KEY_COUNT_POP_Y,0);
-                PopFragment2  popFragment= new PopFragment2();
-                popFragment.setStyle(DialogFragment.STYLE_NO_TITLE,R.style.DialogTheme);
-                popFragment.showNow(getSupportFragmentManager(),"pop2Fragment");
-
-
-
-            }
-        }
-
-    }
 
     public ImageView getImageViewFixedBanner() {
         return imageViewFixedBanner;
@@ -286,7 +268,6 @@ public class MainActivity extends AppCompatActivity {
         }
         else {
             doubleBackToExitPressed++;
-            Toast.makeText(getApplicationContext(),"Click again to close",Toast.LENGTH_SHORT).show();
 
             Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
             if(f instanceof WebViewFragment){

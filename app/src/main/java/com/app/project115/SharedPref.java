@@ -11,6 +11,7 @@ public class SharedPref {
     public static String IS_FIREST_TIME="is first time";
     public static String KEY_COUNT_POP_X="key count pop x";
     public static String KEY_COUNT_POP_Y="key count pop y";
+    public static String KEY_APP_CONFIG="key app config";
 
 
     private static SharedPreferences mSharedPref;
