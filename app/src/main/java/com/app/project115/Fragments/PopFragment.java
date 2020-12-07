@@ -1,8 +1,10 @@
 package com.app.project115.Fragments;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
@@ -36,14 +39,16 @@ import com.facebook.share.Share;
 
 import java.util.concurrent.TimeUnit;
 
-public class PopFragment extends DialogFragment {
+public class PopFragment extends DialogFragment  {
     private RecyclerView recyclerView;
     private AppConfig appConfig;
     private PopButtonListAdupter  popButtonListAdupter;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.pop_fragment, container, false);
+        View v=inflater.inflate(R.layout.pop_fragment, container, false);
+
+        return v;
 
     }
 
@@ -78,7 +83,17 @@ public class PopFragment extends DialogFragment {
 
             }
         });
+
+
     }
+
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
+        getActivity().finish();
+    }
+
+
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -106,6 +121,7 @@ public class PopFragment extends DialogFragment {
         }
         super.onDetach();
     }
+
 
 
 }

@@ -95,8 +95,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 showButton();
-                attachFragment(R.id.fragment_container,DateListFragment.newInstance(),getApplicationContext(),"DateListFragment");
-
+                btCheckResult.callOnClick();
             }
         });
         downloadRemoteConfig = DownloadRemoteConfig.newInstance(getApplication());
@@ -121,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
                         showPop();
                         showPop2();
                     }else {
-                        Toast.makeText(getApplicationContext(),"new settings from db",Toast.LENGTH_LONG).show();
+                       // Toast.makeText(getApplicationContext(),"new settings from db",Toast.LENGTH_LONG).show();
 
                     }
                 }else {
@@ -190,17 +189,23 @@ public class MainActivity extends AppCompatActivity {
 
     private void showPop2() {
         if (!isPop31Showing){
-            Intent intent = new Intent(this, ShowPopActivity.class);
-            intent.setAction("showPop2");
-            startActivity(intent);
+            if ((appConfig.isEnablePop31() && appConfig.isEnablePop32()) && (Util.getUserCountry(getApplicationContext()).equalsIgnoreCase("th") || Util.getUserCountry(getApplicationContext()).equalsIgnoreCase("pk"))) {
+
+                Intent intent = new Intent(this, ShowPopActivity.class);
+                intent.setAction("showPop2");
+                startActivity(intent);
+            }
         }
     }
 
     private void showPop() {
-        isPop31Showing=true;
-        Intent intent = new Intent(this, ShowPopActivity.class);
-        intent.setAction("showPop");
-        startActivity(intent);
+        if ( appConfig.isEnablePop31() && (Util.getUserCountry(getApplicationContext()).equalsIgnoreCase("th")||Util.getUserCountry(getApplicationContext()).equalsIgnoreCase("pk"))) {
+
+            isPop31Showing = true;
+            Intent intent = new Intent(this, ShowPopActivity.class);
+            intent.setAction("showPop");
+            startActivity(intent);
+        }
     }
 
     public ImageButton getBtRefresh() {

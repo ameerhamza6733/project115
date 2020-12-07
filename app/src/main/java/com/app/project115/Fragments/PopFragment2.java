@@ -1,5 +1,6 @@
 package com.app.project115.Fragments;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -71,6 +72,12 @@ public class PopFragment2 extends DialogFragment {
 
             }
         });
+    }
+
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
+        getActivity().finish();
     }
 
     @Override
